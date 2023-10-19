@@ -383,21 +383,21 @@ script:
 
             // fixed kelvin set
             if ( strcmp("$hass_ct_kelvin_fixed","none")!=0 ) {
-              kv.key = "kelvin";
+              kv.key = "color_temp_kelvin";
               kv.value = "$hass_ct_kelvin_fixed";
               resp.data.push_back(kv);
             }
 
             // mireds entity set, attribute not set
             else if ( (strcmp("$hass_ct_kelvin_entity","none")!=0) && (strcmp("$hass_ct_kelvin_attribute","none")==0) ) {
-              kv.key = "kelvin";
+              kv.key = "color_temp_kelvin";
               kv.value = "{{ states(\"$hass_ct_kelvin_entity\") }}";
               resp.data_template.push_back(kv);
             }
 
             // mireds entity and attribute both set
             else if ( (strcmp("$hass_ct_kelvin_entity","none")!=0) && (strcmp("$hass_ct_kelvin_attribute","none")!=0) ) {
-              kv.key = "kelvin";
+              kv.key = "color_temp_kelvin";
               kv.value = "{{ state_attr(\"$hass_ct_kelvin_entity\",\"$hass_ct_kelvin_attribute\") }}";
               resp.data_template.push_back(kv);
             }
@@ -405,7 +405,7 @@ script:
             // fixed rgb set
             else if ( strcmp("$hass_rgb_fixed","none")!=0 ) {
               kv.key = "rgb_color";
-              kv.value = "$hass_rgb_fixed";
+              kv.value = {$hass_rgb_fixed};
               resp.data.push_back(kv);
             }
 
