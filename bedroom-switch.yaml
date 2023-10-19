@@ -6,19 +6,19 @@ substitutions:
   # in your local yaml file by redefining them.
   #
   # packages:
-  #   kauf.rgbsw: github://KaufHA/kauf-rgb-switch/kauf-rgbs.yaml
+  #   kauf.rgbsw: github://KaufHA/kauf-rgb-switch/kauf-rgbs-lite.yaml
   #
 
-  name: kauf-rgbsw             # **** CHANGE DEVICE NAME TO SOMETHING UNIQUE PER DEVICE.  RENAME YAML FILE TO SAME NAME.    ****
-                               # **** USE DASHES (-) INSTEAD OF SPACES OR UNDERSCORE (_).  USE ONLY LOWER CASE LETTERS.     ****
-  friendly_name: Kauf RGB Sw   # **** CHANGE FRIENDLY NAME TO SOMETHING UNIQUE PER DEVICE                                   ****
+  name: bedroom-switch
+  friendly_name: Bedroom Switch
 
   # https://esphome.io/components/esphome.html#esphome-creators-project
   project_name: Kauf.RGBSw
   project_ver_num: "1.36"
+  # project_ver_let: y
 
-  # disable_entities: "true"     # set to "false" to have all entities show up in Home Assistant automatically
-  # disable_webserver: "false"   # set to "true" to disable webserver listening on port 80.
+  # disable_entities: "false"     # set to "false" to have all entities show up in Home Assistant automatically
+  # disable_webserver: "true"   # set to "true" to disable webserver listening on port 80.
 
   wifi_ap_timeout: 2min        # default to 2 minute timeout for yaml file as package.
 
@@ -57,9 +57,9 @@ substitutions:
   sub_button_sensor_duration: 500ms
 
   # substitutions to control hass entities with press combos
-  hass_entity_single_press_toggle:           no.ne
-  hass_entity_double_press_toggle:           no.ne
-  hass_entity_hold_toggle:                   no.ne
+  hass_entity_single_press_toggle:           light.bedroom_group
+  hass_entity_double_press_toggle:           switch.adaptive_lighting_bedroom
+  hass_entity_hold_toggle:                   switch.adaptive_lighting_sleep_mode
   hass_entity_release_without_hold_toggle:   no.ne
 
   # substitutions to sync lights with hass entities instead of UI switch
@@ -76,16 +76,10 @@ esp8266:
   board: esp01_1m
   restore_from_flash: true
   early_pin_init: false
-  start_free: 108
-  global_addr: global_forced_addr
 
 
 # https://esphome.io/guides/automations.html#global-variables
 globals:
-  - id: global_forced_addr
-    type: int
-    restore_value: no
-    initial_value: '12345'
   - id: global_press_time
     type: int
     restore_value: no
@@ -95,6 +89,7 @@ globals:
 # https://esphome.io/components/esphome.html
 esphome:
   name: $name
+  name_add_mac_suffix: false
   project:
     name: $project_name
     version: $project_ver_num
@@ -114,31 +109,27 @@ esphome:
           id: button_release_without_hold
           state: OFF
 
-
+# UNCOMMENT to enable webserver
 # https://esphome.io/components/external_components.html
-external_components:
-  - source:
-      type: git
-      url: https://github.com/KaufHA/common
-      ref: main
-    refresh: always
-
+# external_components:
+#   - source:
+#       type: git
+#       url: https://github.com/KaufHA/common
+#       ref: main
+#     refresh: never
 
 # https://esphome.io/components/wifi.html
 wifi:
 
   # **** ENTER WI-FI CREDENTIALS HERE, USING SECRETS.YAML RECOMMENDED ****
-  ssid: initial_ap            # !secret wifi_ssid
-  password: asdfasdfasdfasdf  # !secret wifi_password
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
 
   # default is 20, 17 is recommended.
   output_power: 17
 
   # using fast_connect as default since it is required for hidden networks.
   fast_connect: true
-
-  forced_addr: 82
-  global_addr: global_forced_addr
 
   ap:
     ap_timeout: $wifi_ap_timeout
@@ -156,7 +147,6 @@ logger:
 api:
   id: kauf_api
 
-
 # https://esphome.io/components/ota.html
 ota:
   on_error:
@@ -166,8 +156,9 @@ ota:
 
 # https://esphome.io/components/web_server.html
 # web_server:
-#   local: true
-#   disable: $disable_webserver
+# Uncomment to enable web server
+# local: true
+# disable: $disable_webserver
 
 # https://esphome.io/components/binary_sensor/index.html
 binary_sensor:
@@ -310,9 +301,6 @@ switch:
   - platform: gpio
     id: relay
     pin: GPIO15
-    forced_hash: 3551080420
-    forced_addr: 0
-    global_addr: global_forced_addr
     restore_mode: RESTORE_DEFAULT_OFF
 
     # https://esphome.io/components/switch/template.html
@@ -320,9 +308,6 @@ switch:
     name: $friendly_name
     id: ui_switch
     optimistic: true
-    forced_hash: 4098969537
-    forced_addr: 2
-    global_addr: global_forced_addr
     restore_mode: RESTORE_DEFAULT_OFF
 
     on_turn_on:
@@ -331,7 +316,7 @@ switch:
             // Waiting for select entity to have a state keeps the relay from toggling during boot.
             // Probably not needed after template switch priority was lowered, but keeping the check
             // in case they do the same for template selects later.
-            if ( id(select_relay).has_state() ) { // && ( id(select_relay).state != "Always Off" ) ) {
+            if ( id(select_relay).has_state() ) { //&& ( id(select_relay).state != "Always Off" ) ) {
               id(relay).turn_on(); }
         - script.execute: copy_vals
         - script.execute: script_save_changes
@@ -343,7 +328,7 @@ switch:
         #     // Waiting for select entity to have a state keeps the relay from toggling during boot.
         #     // Probably not needed after template switch priority was lowered, but keeping the check
         #     // in case they do the same for template selects later.
-        #     if ( id(select_relay).has_state() && ( id(select_relay).state != "Always On" ) ) {
+        #     if ( id(select_relay).has_state() ) { //&& ( id(select_relay).state != "Always On" ) ) {
         #       id(relay).turn_off(); }
         - script.execute: copy_vals
         - script.execute: script_save_changes
@@ -356,9 +341,6 @@ switch:
   #   entity_category: config
   #   # disabled_by_default: $disable_entities
   #   icon: mdi:toggle-switch-off-outline
-  #   forced_hash: 1672474889
-  #   forced_addr: 4
-  #   global_addr: global_forced_addr
   #   restore_mode: RESTORE_DEFAULT_ON
 
   #   on_turn_on:
@@ -429,9 +411,6 @@ light:
     green: pwm1_green
     blue: pwm1_blue
     default_transition_length: $sub_transition_length
-    forced_hash: 3940173824
-    forced_addr: 10
-    global_addr: global_forced_addr
     restore_mode: RESTORE_DEFAULT_ON
 
   - platform: rgb
@@ -442,9 +421,6 @@ light:
     blue: bit_bucket
     entity_category: config
     default_transition_length: 0s
-    forced_hash: 1452166609
-    forced_addr: 22
-    global_addr: global_forced_addr
     restore_mode: RESTORE_DEFAULT_ON
     effects:
       - lambda:
@@ -463,9 +439,6 @@ light:
     blue: bit_bucket
     entity_category: config
     default_transition_length: 0s
-    forced_hash: 1530533365
-    forced_addr: 34
-    global_addr: global_forced_addr
     restore_mode: RESTORE_DEFAULT_ON
     effects:
       - lambda:
@@ -483,9 +456,6 @@ light:
     green: pwm2_green
     blue: pwm2_blue
     default_transition_length: $sub_transition_length
-    forced_hash: 3403140939
-    forced_addr: 46
-    global_addr: global_forced_addr
     restore_mode: RESTORE_DEFAULT_ON
 
   - platform: rgb
@@ -496,9 +466,6 @@ light:
     blue: bit_bucket
     entity_category: config
     default_transition_length: 0s
-    forced_hash: 730390778
-    forced_addr: 58
-    global_addr: global_forced_addr
     restore_mode: RESTORE_DEFAULT_ON
     effects:
       - lambda:
@@ -517,9 +484,6 @@ light:
     blue: bit_bucket
     entity_category: config
     default_transition_length: 0s
-    forced_hash: 1638474020
-    forced_addr: 70
-    global_addr: global_forced_addr
     restore_mode: RESTORE_DEFAULT_ON
     effects:
       - lambda:
@@ -542,13 +506,10 @@ select:
       # - Switched
       - Always On
       # - Always Off
-    initial_option: Always On
+    initial_option: Switched
     restore_value: true
     entity_category: config
     icon: mdi:progress-question
-    forced_hash: 3803457832
-    forced_addr: 8
-    global_addr: global_forced_addr
 
     on_value:
       then:
@@ -576,9 +537,6 @@ select:
     restore_value: true
     entity_category: config
     icon: mdi:toggle-switch-off-outline
-    forced_hash: 1841528035
-    forced_addr: 6
-    global_addr: global_forced_addr
     on_value:
       - script.execute: script_save_changes
 

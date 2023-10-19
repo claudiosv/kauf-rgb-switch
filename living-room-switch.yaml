@@ -1,0 +1,67 @@
+substitutions:
+  name: living-room-switch
+  friendly_name: Living Room Switch
+  hass_light_entity: light.living_room_group
+  disable_entities: "false"
+  disable_webserver: "true"
+  save_on_state: "true" # default is to save selected color as on color of switch
+  save_off_state: "true"
+  hass_rgb_fixed: 255,147,41
+  # hass_ct_kelvin_fixed: "2000"
+  change_delay: 1000ms
+  # hass_brightness_pct_fixed: "100"
+  color_0: "255, 147, 41" # candle
+  color_1: "255, 197, 143" # 40w tungsten
+  color_2: "255, 214, 170" # 100w tungsten
+  color_3: "255, 241, 224" # halogen
+  color_4: "255, 250, 244" # carbon arc
+  color_5: "255, 255, 251" # high noon sun
+  color_6: "255, 255, 255" # direct sunlight
+  color_7: "201, 226, 255" # overcast sky
+  color_8: "64, 156, 255" # clear blue sky
+  color_9: "127,   0, 255"
+  color_10: "255,   0, 255" # magenta
+  color_11: "255,   0, 127"
+
+# COMMENT FOR MINIMAL
+packages:
+  Kauf.RGBSw: github://KaufHA/kauf-rgb-switch/kauf-rgbs.yaml
+  rotate_colors:
+    url: https://github.com/claudiosv/kauf-rgb-switch
+    ref: main
+    files: [yaml-features/rotate-colors-sync-to-ha-light.yaml]
+    refresh: always
+#   rotate_colors: github://claudiosv/kauf-rgb-switch/yaml-features/rotate-colors-sync-to-ha-light.yaml
+# external_components:
+#   - source:
+#       type: git
+#       url: https://github.com/KaufHA/common
+#       ref: main
+#     refresh: always
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+# UNCOMMENT FOR MINIMAL
+# https://esphome.io/components/esp8266.html
+# esp8266:
+#   board: esp01_1m
+#   restore_from_flash: true
+#   early_pin_init: false
+# esphome:
+#   name: ${name}
+#   name_add_mac_suffix: false
+#   project:
+#     name: Kauf.RGBSw
+#     version: "0.1"
+# wifi:
+#   ssid: !secret wifi_ssid
+#   password: !secret wifi_password
+#   output_power: 17
+#   fast_connect: true
+#   ap:
+# captive_portal: # https://esphome.io/components/captive_portal.html
+# logger: # https://esphome.io/components/logger.html
+# api: # https://esphome.io/components/api.html
+# ota: # https://esphome.io/components/ota.html
+# web_server: # https://esphome.io/components/web_server.html
