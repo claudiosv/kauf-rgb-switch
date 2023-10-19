@@ -70,7 +70,7 @@ substitutions:
   hass_ct_kelvin_fixed:          none
   hass_ct_mireds_entity:         none
   hass_ct_mireds_attribute:      none
-  hass_ct_mireds_fixed:          '250'
+  hass_ct_mireds_fixed:          none
 
   ############################################################################
   # substitutions to implement functionality, do not change these
