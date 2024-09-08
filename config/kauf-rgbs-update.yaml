@@ -1,14 +1,13 @@
 substitutions:
   project_ver_let: u
-  wifi_ap_timeout: 15s
 
 
 packages:
-  kauf_rgbsw_base: !include kauf-rgbs.yaml
+  kauf_rgbsw_base: !include ../kauf-rgbs.yaml
 
 
 dashboard_import:
-  package_import_url: github://KaufHA/kauf-rgb-switch/kauf-rgbs.yaml
+  package_import_url: $sub_import_url
 
 
 esphome:
@@ -19,3 +18,8 @@ wifi:
   # add forced hash which isn't needed for dashboard import.
   # Allows saving wifi credentials across update.
   forced_hash: 2179908191
+
+
+# embed the web server's js file for binary update files
+web_server:
+  local: true
