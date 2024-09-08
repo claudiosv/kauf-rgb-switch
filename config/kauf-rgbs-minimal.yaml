@@ -7,7 +7,7 @@ substitutions:
 
   # https://esphome.io/components/esphome.html#esphome-creators-project
   project_name: Kauf.RGBSw
-  project_ver_num: "1.33"
+  project_ver_num: "1.357"
   project_ver_let: m
 
 
@@ -25,6 +25,8 @@ esphome:
     name: $project_name
     version: $project_ver_num($project_ver_let)
 
+  min_version: 2024.6.0
+
 
 # https://esphome.io/components/wifi.html
 wifi:
@@ -36,15 +38,14 @@ wifi:
   # default is 20, 17 is recommended.
   output_power: 17
 
-  # using fast_connect as default since it is required for hidden networks.
-  fast_connect: true
-
   ap:
 
 captive_portal:  # https://esphome.io/components/captive_portal.html
 logger:          # https://esphome.io/components/logger.html
 api:             # https://esphome.io/components/api.html
 ota:             # https://esphome.io/components/ota.html
+  platform: esphome
+safe_mode:
 web_server:      # https://esphome.io/components/web_server.html
 
 

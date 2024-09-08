@@ -19,6 +19,14 @@ substitutions:
 
   # disable_entities: "true"     # set to "false" to have all entities show up in Home Assistant automatically
   # disable_webserver: "false"   # set to "true" to disable webserver listening on port 80.
+  #project_ver_num: "1.359"
+  project_ver_let: y
+
+  sub_4m: "false"
+  sub_import_url: github://KaufHA/kauf-rgb-switch/kauf-rgbs.yaml
+
+  #disable_entities: "true"     # set to "false" to have all entities show up in Home Assistant automatically
+  #disable_webserver: "false"   # set to "true" to disable webserver listening on port 80.
 
   wifi_ap_timeout: 2min        # default to 2 minute timeout for yaml file as package.
 
@@ -113,6 +121,11 @@ esphome:
       - binary_sensor.template.publish:
           id: button_release_without_hold
           state: OFF
+      - binary_sensor.template.publish:
+          id: sensor_4m
+          state: $sub_4m
+
+  min_version: 2024.8.0
 
 
 # https://esphome.io/components/external_components.html
@@ -133,9 +146,6 @@ wifi:
 
   # default is 20, 17 is recommended.
   output_power: 17
-
-  # using fast_connect as default since it is required for hidden networks.
-  fast_connect: true
 
   forced_addr: 82
   global_addr: global_forced_addr
@@ -159,15 +169,20 @@ api:
 
 # https://esphome.io/components/ota.html
 ota:
-  on_error:
-    then:
-      - button.press: restart_button
+  - platform: esphome
+    on_error:
+      then:
+        - button.press: restart_button
+
+
+safe_mode:
 
 
 # https://esphome.io/components/web_server.html
 # web_server:
-#   local: true
 #   disable: $disable_webserver
+#   sensor_4m: $sub_4m
+#   js_url: https://kaufha.com/v2/www.js
 
 # https://esphome.io/components/binary_sensor/index.html
 binary_sensor:
@@ -304,6 +319,12 @@ binary_sensor:
       - binary_sensor.template.publish:
           id: button_release_without_hold
           state: OFF
+
+  - platform: template
+    name: $friendly_name 4MiB
+    id: sensor_4m
+    disabled_by_default: $disable_entities
+
 
 # https://esphome.io/components/switch/index.html
 switch:
