@@ -15,11 +15,12 @@ substitutions:
 
   # https://esphome.io/components/esphome.html#esphome-creators-project
   project_name: Kauf.RGBSw
-  project_ver_num: "1.36"
+  # project_ver_num: "1.36"
 
   # disable_entities: "true"     # set to "false" to have all entities show up in Home Assistant automatically
   # disable_webserver: "false"   # set to "true" to disable webserver listening on port 80.
   #project_ver_num: "1.359"
+  project_ver_num: "1.371"
   project_ver_let: y
 
   sub_4m: "false"
@@ -125,7 +126,7 @@ esphome:
           id: sensor_4m
           state: $sub_4m
 
-  min_version: 2024.8.0
+  min_version: 2024.12.0
 
 
 # https://esphome.io/components/external_components.html
@@ -475,6 +476,13 @@ light:
     on_state:
       then:
         - script.execute: copy_vals
+    initial_state:
+      state: on
+      color_mode: rgb
+      red: 100%
+      green: 0%
+      blue: 0%
+      brightness: 75%
 
   - platform: rgb
     name: $friendly_name Small On Value
@@ -496,6 +504,13 @@ light:
     on_state:
       then:
         - script.execute: copy_vals
+    initial_state:
+      state: on
+      color_mode: rgb
+      red: 0%
+      green: 100%
+      blue: 0%
+      brightness: 100%
 
   - platform: rgb
     name: $friendly_name Big Light
@@ -529,6 +544,13 @@ light:
     on_state:
       then:
         - script.execute: copy_vals
+    initial_state:
+      state: on
+      color_mode: rgb
+      red: 0%
+      green: 100%
+      blue: 100%
+      brightness: 25%
 
   - platform: rgb
     name: $friendly_name Big On Value
@@ -550,6 +572,13 @@ light:
     on_state:
       then:
         - script.execute: copy_vals
+    initial_state:
+      state: on
+      color_mode: rgb
+      red: 0%
+      green: 100%
+      blue: 100%
+      brightness: 90%
 
 
 # https://esphome.io/components/select/index.html
