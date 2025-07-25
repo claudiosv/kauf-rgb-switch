@@ -15,12 +15,7 @@ substitutions:
 
   # https://esphome.io/components/esphome.html#esphome-creators-project
   project_name: Kauf.RGBSw
-  # project_ver_num: "1.36"
-
-  # disable_entities: "true"     # set to "false" to have all entities show up in Home Assistant automatically
-  # disable_webserver: "false"   # set to "true" to disable webserver listening on port 80.
-  #project_ver_num: "1.359"
-  project_ver_num: "1.371"
+  project_ver_num: "1.378"
   project_ver_let: y
 
   sub_4m: "false"
@@ -104,6 +99,7 @@ globals:
 # https://esphome.io/components/esphome.html
 esphome:
   name: $name
+  friendly_name: $friendly_name
   project:
     name: $project_name
     version: $project_ver_num
@@ -126,7 +122,11 @@ esphome:
           id: sensor_4m
           state: $sub_4m
 
-  min_version: 2024.12.0
+  min_version: 2025.7.0
+
+  platformio_options:
+    build_flags:
+      - -w
 
 
 # https://esphome.io/components/external_components.html
@@ -191,7 +191,7 @@ binary_sensor:
     # https://esphome.io/components/binary_sensor/gpio.html
   - platform: gpio
     id: main_button
-    name: $friendly_name Button
+    name: Button
     pin:
       number: GPIO13
       mode:
@@ -285,7 +285,7 @@ binary_sensor:
         - script.execute: $sub_wifi_reset_script
 
   - platform: template
-    name: $friendly_name Single Press
+    name: Single Press
     id: button_single_press
     on_press:
       - delay: $sub_button_sensor_duration
@@ -294,7 +294,7 @@ binary_sensor:
           state: OFF
 
   - platform: template
-    name: $friendly_name Double Press
+    name: Double Press
     id: button_double_press
     on_press:
       - delay: $sub_button_sensor_duration
@@ -303,7 +303,7 @@ binary_sensor:
           state: OFF
 
   - platform: template
-    name: $friendly_name Hold
+    name: Hold
     id: button_hold
     on_press:
       - wait_until:
@@ -313,7 +313,7 @@ binary_sensor:
           state: OFF
 
   - platform: template
-    name: $friendly_name Release Without Hold
+    name: Release Without Hold
     id: button_release_without_hold
     on_press:
       - delay: $sub_button_sensor_duration
@@ -322,7 +322,7 @@ binary_sensor:
           state: OFF
 
   - platform: template
-    name: $friendly_name 4MiB
+    name: 4MiB
     id: sensor_4m
     # disabled_by_default: $disable_entities
 
@@ -445,7 +445,7 @@ output:
 light:
 
   - platform: rgb
-    name: $friendly_name Small Light
+    name: Small Light
     id: small_light
     red: pwm1_red
     green: pwm1_green
@@ -457,7 +457,7 @@ light:
     restore_mode: RESTORE_DEFAULT_ON
 
   - platform: rgb
-    name: $friendly_name Small Off Value
+    name: Small Off Value
     id: small_light_off
     red: bit_bucket
     green: bit_bucket
@@ -485,7 +485,7 @@ light:
       brightness: 75%
 
   - platform: rgb
-    name: $friendly_name Small On Value
+    name: Small On Value
     id: small_light_on
     red: bit_bucket
     green: bit_bucket
@@ -513,7 +513,7 @@ light:
       brightness: 100%
 
   - platform: rgb
-    name: $friendly_name Big Light
+    name: Big Light
     id: big_light
     red: pwm2_red
     green: pwm2_green
@@ -525,7 +525,7 @@ light:
     restore_mode: RESTORE_DEFAULT_ON
 
   - platform: rgb
-    name: $friendly_name Big Off Value
+    name: Big Off Value
     id: big_light_off
     red: bit_bucket
     green: bit_bucket
@@ -553,7 +553,7 @@ light:
       brightness: 25%
 
   - platform: rgb
-    name: $friendly_name Big On Value
+    name: Big On Value
     id: big_light_on
     red: bit_bucket
     green: bit_bucket
@@ -585,7 +585,7 @@ light:
 # https://esphome.io/components/select/template.html
 select:
   - platform: template
-    name: $friendly_name Relay Config
+    name: Relay Config
     id: select_relay
     optimistic: true
     options:
@@ -610,7 +610,7 @@ select:
         - script.execute: script_save_changes
 
   - platform: template
-    name: $friendly_name Button Config
+    name: Button Config
     id: select_button
     optimistic: true
     options:
@@ -797,13 +797,13 @@ button:
     # https://esphome.io/components/button/restart.html
   - platform: restart
     id: restart_button
-    name: $friendly_name Restart Firmware
+    name: Restart Firmware
     entity_category: diagnostic
     # disabled_by_default: $disable_entities
 
     # https://esphome.io/components/button/template.html
   - platform: template
-    name: $friendly_name Restore Lights
+    name: Restore Lights
     entity_category: diagnostic
     # disabled_by_default: $disable_entities
     on_press:
@@ -815,7 +815,7 @@ button:
 text_sensor:
   - platform: wifi_info
     ip_address:
-      name: $friendly_name IP Address
+      name: IP Address
       entity_category: diagnostic
       # disabled_by_default: $disable_entities
   - platform: homeassistant
@@ -837,7 +837,7 @@ sensor:
 
     # https://esphome.io/components/sensor/template.html
   - platform: template
-    name: $friendly_name Button Press Duration
+    name: Button Press Duration
     id: sensor_press_duration
     entity_category: diagnostic
     # disabled_by_default: $disable_entities
@@ -846,7 +846,7 @@ sensor:
 
     # https://esphome.io/components/sensor/uptime.html
   - platform: uptime
-    name: $friendly_name Uptime
+    name: Uptime
     update_interval: 60s
     entity_category: diagnostic
     # disabled_by_default: $disable_entities
